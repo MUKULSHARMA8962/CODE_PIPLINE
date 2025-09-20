@@ -1,0 +1,14 @@
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  image: python:3.9
+  script:
+    - pip install awscli
+    - zip -r app.zip . -x "*.git*" "node_modules/*" "build/*"
+    - aws s3 cp app.zip s3://my-react-app-bucket/app.zip
+    - aws deploy create-deployment \
+        --application-name MyReactApp \
+        --deployment-group-name MyReactApp-Group \
+        --s3-location bucket=my-react-app-bucket,key=app.zip,bundleType=zip
