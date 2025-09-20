@@ -1,0 +1,12 @@
+stages:
+  - deploy
+
+deploy_to_ec2:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh
+  script:
+    - ssh -o StrictHostKeyChecking=no ec2-user@3.80.136.183 'cd /home/ec2-user/CODE_PIPLINE/hello-world && git pull origin main && ./scripts/install.sh && ./scripts/start.sh'
+  only:
+    - main
